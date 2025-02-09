@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: censor-service
+  labels:
+    app: censor-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: censor-service
+  template:
+    metadata:
+      name: censor-service
+      labels:
+        app: censor-service
+    spec:
+      containers:
+        - name: censor-service
+          image: vega-server-microservices/censor-service
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          env:
+            - name: RABBITMQ_USERNAME
+              value: "root"
+            - name: RABBITMQ_PASSWORD
+              value: "123456"
+            - name: RABBITMQ_ADDRESS
+              value: "rabbitmq:5672"
+            - name: API_KEY
+              value: "jCAXe0nUQoWE6t0acA6Wbf52"
+            - name: SECRET_KEY
+              value: "fplkkY9bvCrA1LcuxHbJnkrzQqmFK1Cr"
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: censor-service
+spec:
+  selector:
+    app: censor-service
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: ClusterIP
+
+  

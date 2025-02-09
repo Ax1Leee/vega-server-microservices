@@ -1,0 +1,27 @@
+# 构建阶段
+FROM golang:1.23-alpine AS builder
+
+WORKDIR /app
+
+COPY go.mod .
+COPY go.sum .
+
+RUN go env -w GO111MODULE=on
+RUN go env -w GOPROXY=https://goproxy.cn,direct
+
+RUN go mod download
+
+COPY . .
+
+RUN go build -o api-gateway .
+
+# 运行阶段
+FROM alpine
+
+WORKDIR /app
+
+COPY --from=builder /app/api-gateway .
+
+EXPOSE 8080
+
+CMD ["./api-gateway"]

@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: review-service
+  labels:
+    app: review-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: review-service
+  template:
+    metadata:
+      name: review-service
+      labels:
+        app: review-service
+    spec:
+      containers:
+        - name: review-service
+          image: vega-server-microservices/review-service
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          env:
+            - name: ETCD_USERNAME
+              value: "root"
+            - name: ETCD_PASSWORD
+              value: "123456"
+            - name: MICRO_REGISTRY_ADDRESS
+              value: "etcd:2379"
+            - name: DB_USER
+              value: "root"
+            - name: DB_PASS
+              value: "123456"
+            - name: DB_HOST
+              value: "mysql"
+            - name: DB_PORT
+              value: "3306"
+            - name: DB_NAME
+              value: "review_db"
+            - name: RABBITMQ_USERNAME
+              value: "root"
+            - name: RABBITMQ_PASSWORD
+              value: "123456"
+            - name: RABBITMQ_ADDRESS
+              value: "rabbitmq:5672"
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: review-service
+spec:
+  selector:
+    app: review-service
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  clusterIP: None
+  type: ClusterIP

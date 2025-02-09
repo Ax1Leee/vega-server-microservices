@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: etcd
+  labels:
+    app: etcd
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: etcd
+  template:
+    metadata:
+      name: etcd
+      labels:
+        app: etcd
+    spec:
+      containers:
+        - name: etcd
+          image: bitnami/etcd
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 2379
+              protocol: TCP
+            - containerPort: 2080
+              protocol: TCP
+          env:
+            - name: ETCD_ROOT_PASSWORD
+              value: "123456"
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: etcd
+spec:
+  selector:
+    app: etcd
+  ports:
+    - name: client-port
+      protocol: TCP
+      port: 2379
+      targetPort: 2379
+    - name: peer-port
+      protocol: TCP
+      port: 2380
+      targetPort: 2380
+  type: ClusterIP

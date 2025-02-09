@@ -1,0 +1,6 @@
+resources:
+  - user-service.yaml
+  - review-service.yaml
+  - movie-service.yaml
+  - api-gateway.yaml
+  - censor-service.yaml
