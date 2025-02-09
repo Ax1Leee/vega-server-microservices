@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package user;
+
+import "google/api/annotations.proto";
+
+option go_package = "github.com/Ax1Leee/vega-server-microservices/api/grpc-gateway/user;user";
+//option go_package = "vega-server-microservices/api/grpc-gateway/user;user";
+
+// protoc --proto_path=api --grpc-gateway_out=.. --go-grpc_out=.. --go_out=.. api/grpc-gateway/user/user.proto
+service UserService {
+  rpc GetUser(GetUserRequest) returns (GetUserResponse) {
+    option (google.api.http) = {
+      get: "/user"
+    };
+  }
+}
+
+message User {
+  string avatar = 1;
+  string name = 2;
+}
+
+message GetUserRequest {
+  uint64 user_id = 1;
+}
+
+message GetUserResponse {
+  User user = 1;
+}

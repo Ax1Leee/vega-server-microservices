@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package movie;
+
+import "google/api/annotations.proto";
+
+option go_package = "github.com/Ax1Leee/vega-server-microservices/api/micro/movie;movie";
+//option go_package = "vega-server-microservices/api/micro/movie;movie";
+
+// protoc --proto_path=api --micro_out=.. --go-grpc_out=.. --go_out=.. api/micro/movie/movie.proto
+service MovieService {
+  rpc GetMovie(GetMovieRequest) returns (GetMovieResponse) {
+    option (google.api.http) = {
+      get: "/movie"
+    };
+  }
+}
+
+message Movie {
+  string cover = 1;
+  string title = 2;
+  float critic_rating = 3;
+  float user_rating = 4;
+}
+
+message GetMovieRequest {
+  uint64 movie_id = 1;
+}
+
+message GetMovieResponse {
+  Movie movie = 1;
+}

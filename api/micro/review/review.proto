@@ -1,0 +1,78 @@
+syntax = "proto3";
+
+package review;
+
+import "google/api/annotations.proto";
+import "micro/user/user.proto";
+import "micro/movie/movie.proto";
+
+option go_package = "github.com/Ax1Leee/vega-server-microservices/api/micro/review;review";
+//option go_package = "vega-server-microservices/api/micro/review;review";
+
+// protoc --proto_path=api --micro_out=.. --go-grpc_out=.. --go_out=.. api/micro/review/review.proto
+service ReviewService {
+  rpc GetReviewFromUser(GetReviewFromUserRequest) returns (GetReviewFromUserResponse) {
+    option (google.api.http) = {
+      get: "/review/user"
+    };
+  }
+  rpc GetReviewToMovie(GetReviewToMovieRequest) returns (GetReviewToMovieResponse) {
+    option (google.api.http) = {
+      get: "/review/movie"
+    };
+  }
+  rpc GetReview(GetReviewRequest) returns (GetReviewResponse) {
+    option (google.api.http) = {
+      get: "/user/{user_id}/{movie_id}"
+    };
+  }
+  rpc SetReview(SetReviewRequest) returns (SetReviewResponse) {
+    option (google.api.http) = {
+      post: "/user/{user_id}/{movie_id}"
+      body: "*"
+    };
+  }
+}
+
+message Review {
+  float rating = 1;
+  string content = 2;
+}
+
+message GetReviewFromUserRequest {
+  uint64 review_id = 1;
+}
+
+message GetReviewFromUserResponse {
+  movie.Movie movie = 1;
+  Review review = 2;
+}
+
+message GetReviewToMovieRequest {
+  uint64 review_id = 1;
+}
+
+message GetReviewToMovieResponse {
+  user.User user = 1;
+  Review review = 2;
+}
+
+message GetReviewRequest {
+  uint64 user_id = 1;
+  uint64 movie_id = 2;
+}
+
+message GetReviewResponse {
+  Review review = 1;
+}
+
+message SetReviewRequest {
+  uint64 user_id = 1;
+  uint64 movie_id = 2;
+  float rating = 3;
+  string content = 4;
+}
+
+message SetReviewResponse {
+  Review review = 1;
+}
